@@ -48,20 +48,28 @@ def validar_cliente(cliente):
     return erros
 
 
-def validar_transacao(transacao, ids_clientes, config):
+def validar_transacao(transacao, ids_clientes, ids_clientes_invalidos, config):
     erros = []
-    if transacao.get("cliente_id") not in ids_clientes:
-        erros.append(f"cliente_id inexistente: {transacao.get('cliente_id')}")
+
+    cliente_id = transacao.get("cliente_id")
+
+    if cliente_id in ids_clientes_invalidos:
+        erros.append(f"cliente rejeitado (ID {cliente_id} inválido)")
+    elif cliente_id not in ids_clientes:
+        erros.append(f"cliente_id inexistente: {cliente_id}")
+
     if not valor_valido(transacao.get("valor"), config.get("valor_minimo", 0)):
         erros.append(f"valor inválido: {transacao.get('valor')}")
+
     categorias = config.get("categorias_validas", [])
     if transacao.get("categoria") not in categorias:
         erros.append(f"categoria inválida: '{transacao.get('categoria')}'")
+
     status_validos = config.get("status_validos", [])
     if transacao.get("status") not in status_validos:
         erros.append(f"status inválido: '{transacao.get('status')}'")
-    return erros
 
+    return erros
 
 def separar_registros(registros, funcao_validar, **kwargs):
     validos = []

@@ -7,6 +7,8 @@ def media_idade(clientes):
         return None
     return sum(idades_validas) / len(idades_validas)
 
+def formatar_moeda(valor):
+    return f"R$ {valor:.2f}"
 
 def extremos_idade(clientes):
     """Retorna (minimo, maximo) das idades válidas."""
