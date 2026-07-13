@@ -48,14 +48,11 @@ def validar_cliente(cliente):
     return erros
 
 
-def validar_transacao(transacao, ids_clientes, ids_clientes_invalidos, config):
+def validar_transacao(transacao, ids_clientes, config):
     erros = []
 
     cliente_id = transacao.get("cliente_id")
-
-    if cliente_id in ids_clientes_invalidos:
-        erros.append(f"cliente rejeitado (ID {cliente_id} inválido)")
-    elif cliente_id not in ids_clientes:
+    if cliente_id not in ids_clientes:
         erros.append(f"cliente_id inexistente: {cliente_id}")
 
     if not valor_valido(transacao.get("valor"), config.get("valor_minimo", 0)):
