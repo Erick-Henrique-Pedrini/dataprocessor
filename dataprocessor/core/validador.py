@@ -1,4 +1,3 @@
-# validador.py
 from datetime import date
 
 
@@ -8,31 +7,21 @@ def email_valido(email):
     if "@" not in email:
         return False
     partes = email.strip().split("@")
-    if len(partes) != 2 or "." not in partes[1]:
-        return False
-    return True
+    return len(partes) == 2 and "." in partes[1]
 
 
 def idade_valida(idade):
-    if idade is None:
-        return False
-    return 0 < idade < 150
+    return idade is not None and 0 < idade < 150
 
 
-def data_valida(texto):
-    if not texto:
+def data_valida(texto_data):
+    if not texto_data:
         return False
     try:
-        date.fromisoformat(texto)
+        date.fromisoformat(texto_data)
         return True
     except ValueError:
         return False
-
-
-def valor_valido(valor, minimo=0):
-    if valor is None:
-        return False
-    return valor > minimo
 
 
 def validar_cliente(cliente):
@@ -45,18 +34,19 @@ def validar_cliente(cliente):
         erros.append(f"idade inválida: {cliente.get('idade')}")
     if not data_valida(cliente.get("data_cadastro")):
         erros.append(f"data inválida: '{cliente.get('data_cadastro')}'")
+
     return erros
 
 
 def validar_transacao(transacao, ids_clientes, config):
     erros = []
+    if transacao.get("cliente_id") not in ids_clientes:
+        erros.append(f"cliente_id inexistente: {transacao.get('cliente_id')}")
 
-    cliente_id = transacao.get("cliente_id")
-    if cliente_id not in ids_clientes:
-        erros.append(f"cliente_id inexistente: {cliente_id}")
-
-    if not valor_valido(transacao.get("valor"), config.get("valor_minimo", 0)):
-        erros.append(f"valor inválido: {transacao.get('valor')}")
+    valor_minimo = config.get("valor_minimo", 0)
+    valor = transacao.get("valor")
+    if valor is None or valor <= valor_minimo:
+        erros.append(f"valor inválido: {valor}")
 
     categorias = config.get("categorias_validas", [])
     if transacao.get("categoria") not in categorias:
@@ -68,13 +58,16 @@ def validar_transacao(transacao, ids_clientes, config):
 
     return erros
 
+
 def separar_registros(registros, funcao_validar, **kwargs):
     validos = []
     invalidos = []
+
     for registro in registros:
         erros = funcao_validar(registro, **kwargs)
         if erros:
             invalidos.append({"registro": registro, "erros": erros})
         else:
             validos.append(registro)
+
     return validos, invalidos

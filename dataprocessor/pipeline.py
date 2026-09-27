@@ -1,7 +1,7 @@
 from .leitor import carregar_clientes, carregar_transacoes, carregar_config
-from .validador import validar_cliente, validar_transacao, separar_registros
-from .transformador import transformar_clientes, transformar_transacoes
-from .processador import media_idade, total_aprovado
+from .core.validador import validar_cliente, validar_transacao, separar_registros
+from .core.transformador import transformar_clientes, transformar_transacoes
+from .core.metricas import media_idade, total_aprovado, ticket_medio_aprovado
 
 
 def executar_pipeline(caminho_clientes, caminho_transacoes, caminho_config):
@@ -33,5 +33,6 @@ def executar_pipeline(caminho_clientes, caminho_transacoes, caminho_config):
         "metricas": {
             "media_idade": media_idade(clientes),
             "total_aprovado": total_aprovado(transacoes),
+            "ticket_medio_aprovado": ticket_medio_aprovado(transacoes),
         },
     }

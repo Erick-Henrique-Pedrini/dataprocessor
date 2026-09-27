@@ -1,4 +1,3 @@
-# transformador.py
 import unicodedata
 
 
