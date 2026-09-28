@@ -1,41 +1,34 @@
+def _idades_validas(clientes):
+    return [c.idade for c in clientes if c.idade and c.idade > 0]
+
+
+def _valores_aprovados(transacoes):
+    return [t.valor for t in transacoes if t.esta_aprovada and t.valor and t.valor > 0]
+
+
 def media_idade(clientes):
-    idades_validas = [c["idade"] for c in clientes if c.get("idade") and c["idade"] > 0]
-    if not idades_validas:
-        return 0
-    return sum(idades_validas) / len(idades_validas)
+    idades = _idades_validas(clientes)
+    return sum(idades) / len(idades) if idades else 0
 
 
 def total_aprovado(transacoes):
-    return sum(
-        t["valor"]
-        for t in transacoes
-        if t.get("status") == "aprovado" and t.get("valor", 0) > 0
-    )
+    return sum(_valores_aprovados(transacoes))
 
 
 def ticket_medio_aprovado(transacoes):
-    valores = [
-        t["valor"]
-        for t in transacoes
-        if t.get("status") == "aprovado" and t.get("valor", 0) > 0
-    ]
-    if not valores:
-        return 0
-    return sum(valores) / len(valores)
+    valores = _valores_aprovados(transacoes)
+    return sum(valores) / len(valores) if valores else 0
 
 
 def extremos_idade(clientes):
-    """Retorna (minimo, maximo) das idades válidas."""
-    idades_validas = [c["idade"] for c in clientes if c.get("idade") and c["idade"] > 0]
-    if not idades_validas:
+    idades = _idades_validas(clientes)
+    if not idades:
         return None, None
-    return min(idades_validas), max(idades_validas)
+    return min(idades), max(idades)
 
 
 def contar_por_cidade(clientes):
-    """Retorna dicionário com contagem de clientes por cidade."""
     contagem = {}
     for cliente in clientes:
-        cidade = cliente["cidade"]
-        contagem[cidade] = contagem.get(cidade, 0) + 1
+        contagem[cliente.cidade] = contagem.get(cliente.cidade, 0) + 1
     return contagem

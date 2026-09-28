@@ -1,4 +1,5 @@
 import unicodedata
+from dataclasses import replace
 
 
 def _remover_acentos(texto):
@@ -25,25 +26,22 @@ def normalizar_cidade(cidade):
 
 
 def transformar_cliente(cliente):
-    return {
-        "id": cliente["id"],
-        "nome": normalizar_nome(cliente.get("nome", "")),
-        "email": normalizar_email(cliente.get("email", "")),
-        "idade": cliente["idade"],
-        "cidade": normalizar_cidade(cliente.get("cidade", "")),
-        "data_cadastro": cliente.get("data_cadastro", "").strip(),
-    }
+    return replace(
+        cliente,
+        nome=normalizar_nome(cliente.nome),
+        email=normalizar_email(cliente.email),
+        cidade=normalizar_cidade(cliente.cidade),
+        data_cadastro=cliente.data_cadastro.strip(),
+    )
 
 
 def transformar_transacao(transacao):
-    return {
-        "id": transacao["id"],
-        "cliente_id": transacao["cliente_id"],
-        "valor": transacao["valor"],
-        "categoria": transacao.get("categoria", "").strip().lower(),
-        "data": transacao.get("data", "").strip(),
-        "status": transacao.get("status", "").strip().lower(),
-    }
+    return replace(
+        transacao,
+        categoria=transacao.categoria.strip().lower(),
+        data=transacao.data.strip(),
+        status=transacao.status.strip().lower(),
+    )
 
 
 def transformar_clientes(clientes):

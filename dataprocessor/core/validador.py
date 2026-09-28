@@ -26,35 +26,35 @@ def data_valida(texto_data):
 
 def validar_cliente(cliente):
     erros = []
-    if not cliente.get("nome", "").strip():
+    if not (cliente.nome or "").strip():
         erros.append("nome vazio")
-    if not email_valido(cliente.get("email")):
-        erros.append(f"email inválido: '{cliente.get('email')}'")
-    if not idade_valida(cliente.get("idade")):
-        erros.append(f"idade inválida: {cliente.get('idade')}")
-    if not data_valida(cliente.get("data_cadastro")):
-        erros.append(f"data inválida: '{cliente.get('data_cadastro')}'")
+    if not email_valido(cliente.email):
+        erros.append(f"email inválido: '{cliente.email}'")
+    if not idade_valida(cliente.idade):
+        erros.append(f"idade inválida: {cliente.idade}")
+    if not data_valida(cliente.data_cadastro):
+        erros.append(f"data inválida: '{cliente.data_cadastro}'")
 
     return erros
 
 
 def validar_transacao(transacao, ids_clientes, config):
     erros = []
-    if transacao.get("cliente_id") not in ids_clientes:
-        erros.append(f"cliente_id inexistente: {transacao.get('cliente_id')}")
+    if transacao.cliente_id not in ids_clientes:
+        erros.append(f"cliente_id inexistente: {transacao.cliente_id}")
 
     valor_minimo = config.get("valor_minimo", 0)
-    valor = transacao.get("valor")
+    valor = transacao.valor
     if valor is None or valor <= valor_minimo:
         erros.append(f"valor inválido: {valor}")
 
     categorias = config.get("categorias_validas", [])
-    if transacao.get("categoria") not in categorias:
-        erros.append(f"categoria inválida: '{transacao.get('categoria')}'")
+    if transacao.categoria not in categorias:
+        erros.append(f"categoria inválida: '{transacao.categoria}'")
 
     status_validos = config.get("status_validos", [])
-    if transacao.get("status") not in status_validos:
-        erros.append(f"status inválido: '{transacao.get('status')}'")
+    if transacao.status not in status_validos:
+        erros.append(f"status inválido: '{transacao.status}'")
 
     return erros
 
